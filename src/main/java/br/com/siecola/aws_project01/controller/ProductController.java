@@ -15,18 +15,22 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
     private ProductRepository productRepository;
     private ProductPublisher productPublisher;
+
     @Autowired
     public ProductController(ProductRepository productRepository,
                              ProductPublisher productPublisher) {
         this.productRepository = productRepository;
         this.productPublisher = productPublisher;
     }
+
     @GetMapping
     public Iterable<Product> findAll() {
         return productRepository.findAll();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> findById(@PathVariable long id) {
         Optional<Product> optProduct = productRepository.findById(id);
@@ -36,6 +40,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PostMapping
     public ResponseEntity<Product> saveProduct(
             @RequestBody @Valid Product product) {
@@ -45,19 +50,22 @@ public class ProductController {
         return new ResponseEntity<Product>(productCreated,
                 HttpStatus.CREATED);
     }
+
     @PutMapping(path = "/{id}")
     public ResponseEntity<Product> updateProduct(
             @RequestBody @Valid Product product, @PathVariable("id") long id) {
         if (productRepository.existsById(id)) {
             product.setId(id);
-            productPublisher.publishProductEvent(product,
+            Product productUpdated = productRepository.save(product);
+            productPublisher.publishProductEvent(productUpdated,
                     EventType.PRODUCT_UPDATE, "doralice");
-            return new ResponseEntity<Product>(productRepository.save(product),
+            return new ResponseEntity<Product>(productUpdated,
                     HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable("id") long id) {
         Optional<Product> optProduct = productRepository.findById(id);
@@ -71,6 +79,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping(path = "/bycode")
     public ResponseEntity<Product> findByCode(@RequestParam String code) {
         Optional<Product> optProduct = productRepository.findByCode(code);
@@ -80,4 +89,5 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 }

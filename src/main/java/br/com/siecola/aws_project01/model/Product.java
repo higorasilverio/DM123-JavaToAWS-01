@@ -9,8 +9,9 @@ import javax.persistence.*;
 )
 @Entity
 public class Product {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
     @Column(length = 32, nullable = false)
     private String name;
@@ -59,4 +60,5 @@ public class Product {
     public void setPrice(float price) {
         this.price = price;
     }
+
 }

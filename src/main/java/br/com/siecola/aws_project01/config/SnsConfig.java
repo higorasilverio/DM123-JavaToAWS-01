@@ -1,5 +1,4 @@
 package br.com.siecola.aws_project01.config;
-
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
@@ -13,7 +12,6 @@ public class SnsConfig {
 
     @Value("${aws.region}")
     private String awsRegion;
-
     @Value("${aws.sns.topic.product.events.arn}")
     private String productEventsTopic;
 

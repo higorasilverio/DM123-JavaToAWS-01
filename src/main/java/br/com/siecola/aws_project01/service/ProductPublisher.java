@@ -16,13 +16,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductPublisher {
-
-    private static final Logger log = LoggerFactory.getLogger(ProductPublisher.class);
-
+    private static final Logger log = LoggerFactory.getLogger(
+            ProductPublisher.class);
     private AmazonSNS snsClient;
     private Topic productEventsTopic;
     private ObjectMapper objectMapper;
-
     public ProductPublisher(AmazonSNS snsClient,
                             @Qualifier("productEventsTopic")Topic productEventsTopic,
                             ObjectMapper objectMapper) {
@@ -31,16 +29,14 @@ public class ProductPublisher {
         this.objectMapper = objectMapper;
     }
 
-    public void publishProductEvent(Product product, EventType eventType, String username) {
-
+    public void publishProductEvent(Product product, EventType eventType,
+                                    String username) {
         ProductEvent productEvent = new ProductEvent();
         productEvent.setProductId(product.getId());
         productEvent.setCode(product.getCode());
         productEvent.setUsername(username);
-
         Envelope envelope = new Envelope();
         envelope.setEventType(eventType);
-
         try {
             envelope.setData(objectMapper.writeValueAsString(productEvent));
             PublishResult publishResult = snsClient.publish(
